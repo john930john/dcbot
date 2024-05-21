@@ -1,5 +1,5 @@
 <h2 align="center">
-    â”€â”€ã€Œ á´€É´á´É´ ãƒ€ á´á´œsÉªá´„ ã€â”€â”€
+    ──「 ᴀɴᴏɴ ダ ᴍᴜsɪᴄ 」──
 </h2>
 
 <p align="center">
@@ -19,13 +19,13 @@
 </p>
 
 <h3 align="center">
-    â”€ã€Œ á´…á´‡á´©ÊŸá´Ê á´É´ Êœá´‡Ê€á´á´‹á´œ ã€â”€
+    ─「 ᴅᴇᴩʟᴏʏ ᴏɴ ʜᴇʀᴏᴋᴜ 」─
 </h3>
 
 <p align="center"><a href="https://dashboard.heroku.com/new?template=https://github.com/Mamaklicengo/k-y-c-music"> <img src="https://img.shields.io/badge/Deploy%20On%20Heroku-black?style=for-the-badge&logo=heroku" width="220" height="38.45"/></a></p>
 
 <h3 align="center">
-    â”€ã€Œ á´…á´‡á´©ÊŸá´Ê á´É´ ÊŸá´á´„á´€ÊŸ Êœá´sá´›/ á´ á´˜s ã€â”€
+    ─「 ᴅᴇᴩʟᴏʏ ᴏɴ ʟᴏᴄᴀʟ ʜᴏsᴛ/ ᴠᴘs 」─
 </h3>
 
 - Get your [Necessary Variables](https://github.com/AnonymousX1025/AnonXMusic/blob/master/sample.env)
@@ -54,10 +54,10 @@ Press `Ctrl+C` when you're done with editing env and `:wq` to save the env<br>
 - Finally run the bot by :
 `bash start`
 - For getting out from tmux session : Press `Ctrl+b` and then `d`<br>
-â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
+━━━━━━━━━━━━━━━━━━━━
 
 <h3 align="center">
-    â”€ã€Œ sá´œá´©á´©á´Ê€á´› ã€â”€
+    ─「 sᴜᴩᴩᴏʀᴛ 」─
 </h3>
 
 <p align="center">
@@ -68,4 +68,4 @@ Press `Ctrl+C` when you're done with editing env and `:wq` to save the env<br>
 <a href="https://telegram.me/FallenAssociation"><img src="https://img.shields.io/badge/-Support%20Channel-blue.svg?style=for-the-badge&logo=Telegram"></a>
 </p>
 
-- <b> _sá´©á´‡á´„Éªá´€ÊŸ á´›Êœá´€É´á´‹s á´›á´ [á´›á´‡á´€á´ Êá´œá´‹á´‹Éª](https://github.com/TeamYukki) Ò“á´Ê€ [Êá´œá´‹á´‹Éª á´á´œsÉªá´„ Ê™á´á´›](https://github.com/TeamYukki/YukkiMusicBot)_ </b>
+- <b> _sᴩᴇᴄɪᴀʟ ᴛʜᴀɴᴋs ᴛᴏ [ᴛᴇᴀᴍ ʏᴜᴋᴋɪ](https://github.com/TeamYukki) ғᴏʀ [ʏᴜᴋᴋɪ ᴍᴜsɪᴄ ʙᴏᴛ](https://github.com/TeamYukki/YukkiMusicBot)_ </b>
