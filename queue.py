@@ -1,75 +1,91 @@
+import asyncio
 from typing import Union
 
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from AnonXMusic.misc import db
+from AnonXMusic.utils.formatters import check_duration, seconds_to_min
+from config import autoclean, time_to_seconds
 
 
-def queue_markup(
-    _,
-    DURATION,
-    CPLAY,
-    videoid,
-    played: Union[bool, int] = None,
-    dur: Union[bool, int] = None,
+async def put_queue(
+    chat_id,
+    original_chat_id,
+    file,
+    title,
+    duration,
+    user,
+    vidid,
+    user_id,
+    stream,
+    forceplay: Union[bool, str] = None,
 ):
-    not_dur = [
-        [
-            InlineKeyboardButton(
-                text=_["QU_B_1"],
-                callback_data=f"GetQueued {CPLAY}|{videoid}",
-            ),
-            InlineKeyboardButton(
-                text=_["CLOSE_BUTTON"],
-                callback_data="close",
-            ),
-        ]
-    ]
-    dur = [
-        [
-            InlineKeyboardButton(
-                text=_["QU_B_2"].format(played, dur),
-                callback_data="GetTimer",
+    title = title.title()
+    try:
+        duration_in_seconds = time_to_seconds(duration) - 3
+    except:
+        duration_in_seconds = 0
+    put = {
+        "title": title,
+        "dur": duration,
+        "streamtype": stream,
+        "by": user,
+        "user_id": user_id,
+        "chat_id": original_chat_id,
+        "file": file,
+        "vidid": vidid,
+        "seconds": duration_in_seconds,
+        "played": 0,
+    }
+    if forceplay:
+        check = db.get(chat_id)
+        if check:
+            check.insert(0, put)
+        else:
+            db[chat_id] = []
+            db[chat_id].append(put)
+    else:
+        db[chat_id].append(put)
+    autoclean.append(file)
+
+
+async def put_queue_index(
+    chat_id,
+    original_chat_id,
+    file,
+    title,
+    duration,
+    user,
+    vidid,
+    stream,
+    forceplay: Union[bool, str] = None,
+):
+    if "20.212.146.162" in vidid:
+        try:
+            dur = await asyncio.get_event_loop().run_in_executor(
+                None, check_duration, vidid
             )
-        ],
-        [
-            InlineKeyboardButton(
-                text=_["QU_B_1"],
-                callback_data=f"GetQueued {CPLAY}|{videoid}",
-            ),
-            InlineKeyboardButton(
-                text=_["CLOSE_BUTTON"],
-                callback_data="close",
-            ),
-        ],
-    ]
-    upl = InlineKeyboardMarkup(not_dur if DURATION == "Unknown" else dur)
-    return upl
-
-
-def queue_back_markup(_, CPLAY):
-    upl = InlineKeyboardMarkup(
-        [
-            [
-                InlineKeyboardButton(
-                    text=_["BACK_BUTTON"],
-                    callback_data=f"queue_back_timer {CPLAY}",
-                ),
-                InlineKeyboardButton(
-                    text=_["CLOSE_BUTTON"],
-                    callback_data="close",
-                ),
-            ]
-        ]
-    )
-    return upl
-
-
-def aq_markup(_, chat_id):
-    buttons = [
-        [
-            InlineKeyboardButton(text="▷", callback_data=f"ADMIN Resume|{chat_id}"),
-            InlineKeyboardButton(text="II", callback_data=f"ADMIN Pause|{chat_id}"),
-            InlineKeyboardButton(text="‣‣I", callback_data=f"ADMIN Skip|{chat_id}"),
-            InlineKeyboardButton(text="▢", callback_data=f"ADMIN Stop|{chat_id}"),
-        ],
-    ]
-    return buttons
+            duration = seconds_to_min(dur)
+        except:
+            duration = "ᴜʀʟ sᴛʀᴇᴀᴍ"
+            dur = 0
+    else:
+        dur = 0
+    put = {
+        "title": title,
+        "dur": duration,
+        "streamtype": stream,
+        "by": user,
+        "chat_id": original_chat_id,
+        "file": file,
+        "vidid": vidid,
+        "seconds": dur,
+        "played": 0,
+    }
+    if forceplay:
+        check = db.get(chat_id)
+        if check:
+            check.insert(0, put)
+        else:
+            db[chat_id] = []
+            db[chat_id].append(put)
+    else:
+        db[chat_id].append(put)
