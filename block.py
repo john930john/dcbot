@@ -9,41 +9,41 @@ from AnonXMusic.utils.extraction import extract_user
 from config import BANNED_USERS
 
 
-@app.on_message(filters.command(["block"]) & SUDOERS)
+@app.on_message(filters.command(["engelle"]) & SUDOERS)
 @language
-async def useradd(client, message: Message, _):
+async def kullanıcı_ekle(client, message: Message, dil):
     if not message.reply_to_message:
         if len(message.command) != 2:
-            return await message.reply_text(_["general_1"])
+            return await message.reply_text(dil["general_1"])
     user = await extract_user(message)
     if user.id in BANNED_USERS:
-        return await message.reply_text(_["block_1"].format(user.mention))
+        return await message.reply_text(dil["block_1"].format(user.mention))
     await add_gban_user(user.id)
     BANNED_USERS.add(user.id)
-    await message.reply_text(_["block_2"].format(user.mention))
+    await message.reply_text(dil["block_2"].format(user.mention))
 
 
-@app.on_message(filters.command(["unblock"]) & SUDOERS)
+@app.on_message(filters.command(["engelikaldır"]) & SUDOERS)
 @language
-async def userdel(client, message: Message, _):
+async def kullanıcı_sil(client, message: Message, dil):
     if not message.reply_to_message:
         if len(message.command) != 2:
-            return await message.reply_text(_["general_1"])
+            return await message.reply_text(dil["general_1"])
     user = await extract_user(message)
     if user.id not in BANNED_USERS:
-        return await message.reply_text(_["block_3"].format(user.mention))
+        return await message.reply_text(dil["block_3"].format(user.mention))
     await remove_gban_user(user.id)
     BANNED_USERS.remove(user.id)
-    await message.reply_text(_["block_4"].format(user.mention))
+    await message.reply_text(dil["block_4"].format(user.mention))
 
 
-@app.on_message(filters.command(["blocked", "blockedusers", "blusers"]) & SUDOERS)
+@app.on_message(filters.command(["engellenenler", "engellenenkullanıcılar", "engelliler"]) & SUDOERS)
 @language
-async def sudoers_list(client, message: Message, _):
+async def sudoers_listesi(client, message: Message, dil):
     if not BANNED_USERS:
-        return await message.reply_text(_["block_5"])
-    mystic = await message.reply_text(_["block_6"])
-    msg = _["block_7"]
+        return await message.reply_text(dil["block_5"])
+    mystic = await message.reply_text(dil["block_6"])
+    msg = dil["block_7"]
     count = 0
     for users in BANNED_USERS:
         try:
@@ -54,6 +54,7 @@ async def sudoers_list(client, message: Message, _):
             continue
         msg += f"{count}➤ {user}\n"
     if count == 0:
-        return await mystic.edit_text(_["block_5"])
+        return await mystic.edit_text(dil["block_5"])
     else:
         return await mystic.edit_text(msg)
+            
