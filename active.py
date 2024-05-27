@@ -11,66 +11,65 @@ from AnonXMusic.utils.database import (
     remove_active_video_chat,
 )
 
-
-@app.on_message(filters.command(["activevc", "activevoice"]) & SUDOERS)
-async def activevc(_, message: Message):
-    mystic = await message.reply_text("» ɢᴇᴛᴛɪɴɢ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛs ʟɪsᴛ...")
-    served_chats = await get_active_chats()
-    text = ""
+@app.on_message(filters.command(["aktifvc", "aktifsese"]))  # SUDOERS ekleyebilirsiniz
+async def aktifvc(_, message: Message):
+    mystic = await message.reply_text("» Aktif sesli sohbetler listeleniyor...")
+    aktif_sohbetler = await get_active_chats()
+    metin = ""
     j = 0
-    for x in served_chats:
+    for x in aktif_sohbetler:
         try:
-            title = (await app.get_chat(x)).title
+            baslik = (await app.get_chat(x)).title
         except:
             await remove_active_chat(x)
             continue
         try:
             if (await app.get_chat(x)).username:
-                user = (await app.get_chat(x)).username
-                text += f"<b>{j + 1}.</b> <a href=https://t.me/{user}>{unidecode(title).upper()}</a> [<code>{x}</code>]\n"
+                kullanici = (await app.get_chat(x)).username
+                metin += f"<b>{j + 1}.</b> <a href=https://t.me/{kullanici}>{unidecode(baslik).upper()}</a> [<code>{x}</code>]\n"
             else:
-                text += (
-                    f"<b>{j + 1}.</b> {unidecode(title).upper()} [<code>{x}</code>]\n"
+                metin += (
+                    f"<b>{j + 1}.</b> {unidecode(baslik).upper()} [<code>{x}</code>]\n"
                 )
             j += 1
         except:
             continue
-    if not text:
-        await mystic.edit_text(f"» ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛs ᴏɴ {app.mention}.")
+    if not metin:
+        await mystic.edit_text(f"» {app.mention} üzerinde aktif sesli sohbet bulunmuyor.")
     else:
         await mystic.edit_text(
-            f"<b>» ʟɪsᴛ ᴏғ ᴄᴜʀʀᴇɴᴛʟʏ ᴀᴄᴛɪᴠᴇ ᴠᴏɪᴄᴇ ᴄʜᴀᴛs :</b>\n\n{text}",
+            f"<b>» Şu anda aktif olan sesli sohbetler :</b>\n\n{metin}",
             disable_web_page_preview=True,
         )
 
-
-@app.on_message(filters.command(["activev", "activevideo"]) & SUDOERS)
-async def activevi_(_, message: Message):
-    mystic = await message.reply_text("» ɢᴇᴛᴛɪɴɢ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs ʟɪsᴛ...")
-    served_chats = await get_active_video_chats()
-    text = ""
+@app.on_message(filters.command(["aktifv", "aktifvideo"]))  # SUDOERS ekleyebilirsiniz
+async def aktifv(_, message: Message):
+    mystic = await message.reply_text("» Aktif video sohbetler listeleniyor...")
+    aktif_video_sohbetler = await get_active_video_chats()
+    metin = ""
     j = 0
-    for x in served_chats:
+    for x in aktif_video_sohbetler:
         try:
-            title = (await app.get_chat(x)).title
+            baslik = (await app.get_chat(x)).title
         except:
             await remove_active_video_chat(x)
             continue
         try:
             if (await app.get_chat(x)).username:
-                user = (await app.get_chat(x)).username
-                text += f"<b>{j + 1}.</b> <a href=https://t.me/{user}>{unidecode(title).upper()}</a> [<code>{x}</code>]\n"
+                kullanici = (await app.get_chat(x)).username
+                metin += f"<b>{j + 1}.</b> <a href=https://t.me/{kullanici}>{unidecode(baslik).upper()}</a> [<code>{x}</code>]\n"
             else:
-                text += (
-                    f"<b>{j + 1}.</b> {unidecode(title).upper()} [<code>{x}</code>]\n"
+                metin += (
+                    f"<b>{j + 1}.</b> {unidecode(baslik).upper()} [<code>{x}</code>]\n"
                 )
             j += 1
         except:
             continue
-    if not text:
-        await mystic.edit_text(f"» ɴᴏ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs ᴏɴ {app.mention}.")
+    if not metin:
+        await mystic.edit_text(f"» {app.mention} üzerinde aktif video sohbet bulunmuyor.")
     else:
         await mystic.edit_text(
-            f"<b>» ʟɪsᴛ ᴏғ ᴄᴜʀʀᴇɴᴛʟʏ ᴀᴄᴛɪᴠᴇ ᴠɪᴅᴇᴏ ᴄʜᴀᴛs :</b>\n\n{text}",
+            f"<b>» Şu anda aktif olan video sohbetler :</b>\n\n{metin}",
             disable_web_page_preview=True,
-        )
+            )
+                
