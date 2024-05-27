@@ -22,14 +22,14 @@ IS_BROADCASTING = False
 
 @app.on_message(filters.command("broadcast", "reklam") & SUDOERS)
 @language
-async def braodcast_message(client, message, _):
+async def braodcast_message(client, message, dil):
     global IS_BROADCASTING
     if message.reply_to_message:
         x = message.reply_to_message.id
         y = message.chat.id
     else:
         if len(message.command) < 2:
-            return await message.reply_text(_["broad_2"])
+            return await message.reply_text(dil["broad_2"])
         query = message.text.split(None, 1)[1]
         if "-pin" in query:
             query = query.replace("-pin", "")
@@ -42,10 +42,10 @@ async def braodcast_message(client, message, _):
         if "-user" in query:
             query = query.replace("-user", "")
         if query == "":
-            return await message.reply_text(_["broad_8"])
+            return await message.reply_text(dil["broad_8"])
 
     IS_BROADCASTING = True
-    await message.reply_text(_["broad_1"])
+    await message.reply_text(dil["broad_1"])
 
     if "-nobot" not in message.text:
         sent = 0
@@ -83,7 +83,7 @@ async def braodcast_message(client, message, _):
             except:
                 continue
         try:
-            await message.reply_text(_["broad_3"].format(sent, pin))
+            await message.reply_text(dil["broad_3"].format(sent, pin))
         except:
             pass
 
@@ -110,13 +110,13 @@ async def braodcast_message(client, message, _):
             except:
                 pass
         try:
-            await message.reply_text(_["broad_4"].format(susr))
+            await message.reply_text(dil["broad_4"].format(susr))
         except:
             pass
 
     if "-assistant" in message.text:
-        aw = await message.reply_text(_["broad_5"])
-        text = _["broad_6"]
+        aw = await message.reply_text(dil["broad_5"])
+        text = dil["broad_6"]
         from AnonXMusic.core.userbot import assistants
 
         for num in assistants:
@@ -138,7 +138,7 @@ async def braodcast_message(client, message, _):
                     await asyncio.sleep(flood_time)
                 except:
                     continue
-            text += _["broad_7"].format(num, sent)
+            text += dil["broad_7"].format(num, sent)
         try:
             await aw.edit_text(text)
         except:
@@ -146,7 +146,7 @@ async def braodcast_message(client, message, _):
     IS_BROADCASTING = False
 
 
-async def auto_clean():
+async def otomatik_temizlik():
     while not await asyncio.sleep(10):
         try:
             served_chats = await get_active_chats()
@@ -166,4 +166,5 @@ async def auto_clean():
             continue
 
 
-asyncio.create_task(auto_clean())
+asyncio.create_task(otomatik_temizlik())
+                    
