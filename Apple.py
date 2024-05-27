@@ -3,7 +3,7 @@ from typing import Union
 
 import aiohttp
 from bs4 import BeautifulSoup
-from youtubesearchpython.__future__ import VideosSearch
+from youtubesearchpython import VideosSearch
 
 
 class AppleAPI:
@@ -33,7 +33,8 @@ class AppleAPI:
         if search is None:
             return False
         results = VideosSearch(search, limit=1)
-        for result in (await results.next())["result"]:
+        results = await results.next()
+        for result in results["result"]:
             title = result["title"]
             ytlink = result["link"]
             vidid = result["id"]
@@ -69,3 +70,4 @@ class AppleAPI:
                 xx = ((item["content"]).split("album/")[1]).split("/")[0]
             results.append(xx)
         return results, playlist_id
+        
