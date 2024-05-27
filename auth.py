@@ -14,18 +14,19 @@ from AnonXMusic.utils.inline import close_markup
 from config import BANNED_USERS, adminlist
 
 
-@app.on_message(filters.command("auth","ver") & filters.group & ~BANNED_USERS)
+@app.on_message(filters.command("yetkilendir") & filters.group & ~BANNED_USERS)
 @AdminActual
-async def auth(client, message: Message, _):
+@language
+async def yetkilendir(client, message: Message, _):
     if not message.reply_to_message:
         if len(message.command) != 2:
-            return await message.reply_text(_["general_1"])
+            return await message.reply_text(_["genel_1"])
     user = await extract_user(message)
     token = await int_to_alpha(user.id)
     _check = await get_authuser_names(message.chat.id)
     count = len(_check)
     if int(count) == 25:
-        return await message.reply_text(_["auth_1"])
+        return await message.reply_text(_["yetkilendirme_1"])
     if token not in _check:
         assis = {
             "auth_user_id": user.id,
@@ -38,17 +39,18 @@ async def auth(client, message: Message, _):
             if user.id not in get:
                 get.append(user.id)
         await save_authuser(message.chat.id, token, assis)
-        return await message.reply_text(_["auth_2"].format(user.mention))
+        return await message.reply_text(_["yetkilendirme_2"].format(user.mention))
     else:
-        return await message.reply_text(_["auth_3"].format(user.mention))
+        return await message.reply_text(_["yetkilendirme_3"].format(user.mention))
 
 
-@app.on_message(filters.command("unauth","al") & filters.group & ~BANNED_USERS)
+@app.on_message(filters.command("yetkikaldır") & filters.group & ~BANNED_USERS)
 @AdminActual
-async def unauthusers(client, message: Message, _):
+@language
+async def yetkikaldır(client, message: Message, _):
     if not message.reply_to_message:
         if len(message.command) != 2:
-            return await message.reply_text(_["general_1"])
+            return await message.reply_text(_["genel_1"])
     user = await extract_user(message)
     token = await int_to_alpha(user.id)
     deleted = await delete_authuser(message.chat.id, token)
@@ -57,23 +59,23 @@ async def unauthusers(client, message: Message, _):
         if user.id in get:
             get.remove(user.id)
     if deleted:
-        return await message.reply_text(_["auth_4"].format(user.mention))
+        return await message.reply_text(_["yetkikaldırma_1"].format(user.mention))
     else:
-        return await message.reply_text(_["auth_5"].format(user.mention))
+        return await message.reply_text(_["yetkikaldırma_2"].format(user.mention))
 
 
 @app.on_message(
-    filters.command(["authlist", "authusers"," yetkili"]) & filters.group & ~BANNED_USERS
+    filters.command(["yetkililiste", "yetkililer"]) & filters.group & ~BANNED_USERS
 )
 @language
-async def authusers(client, message: Message, _):
+async def yetkililiste(client, message: Message, _):
     _wtf = await get_authuser_names(message.chat.id)
     if not _wtf:
-        return await message.reply_text(_["setting_4"])
+        return await message.reply_text(_["ayarlar_4"])
     else:
         j = 0
-        mystic = await message.reply_text(_["auth_6"])
-        text = _["auth_7"].format(message.chat.title)
+        mystic = await message.reply_text(_["yetkililiste_1"])
+        text = _["yetkililiste_2"].format(message.chat.title)
         for umm in _wtf:
             _umm = await get_authuser(message.chat.id, umm)
             user_id = _umm["auth_user_id"]
@@ -85,5 +87,6 @@ async def authusers(client, message: Message, _):
             except:
                 continue
             text += f"{j}➤ {user}[<code>{user_id}</code>]\n"
-            text += f"   {_['auth_8']} {admin_name}[<code>{admin_id}</code>]\n\n"
+            text += f"   {_['yetkililiste_3']} {admin_name}[<code>{admin_id}</code>]\n\n"
         await mystic.edit_text(text, reply_markup=close_markup(_))
+        
