@@ -5,18 +5,18 @@ from pyrogram.enums import ChatType
 
 import config
 from AnonXMusic import app
-from AnonXMusic.core.call import Anony, autoend
-from AnonXMusic.utils.database import get_client, is_active_chat, is_autoend
+from AnonXMusic.core.çağrı import Anony, otomatik_ayrılma
+from AnonXMusic.utils.database import get_client, is_active_chat, otomatik_ayrılma_durumu, otomatik_sonlandırma_durumu
 
 
-async def auto_leave():
-    if config.AUTO_LEAVING_ASSISTANT:
+async def otomatik_ayrılma():
+    if config.OTOMATIK_AYRILMA_ASSİSTANI:
         while not await asyncio.sleep(900):
-            from AnonXMusic.core.userbot import assistants
+            from AnonXMusic.core.userbot import asistanlar
 
-            for num in assistants:
+            for num in asistanlar:
                 client = await get_client(num)
-                left = 0
+                ayrıldı = 0
                 try:
                     async for i in client.get_dialogs():
                         if i.chat.type in [
@@ -29,46 +29,35 @@ async def auto_leave():
                                 and i.chat.id != -1001686672798
                                 and i.chat.id != -1001549206010
                             ):
-                                if left == 20:
+                                if ayrıldı == 20:
                                     continue
                                 if not await is_active_chat(i.chat.id):
                                     try:
                                         await client.leave_chat(i.chat.id)
-                                        left += 1
+                                        ayrıldı += 1
                                     except:
                                         continue
                 except:
                     pass
 
 
-asyncio.create_task(auto_leave())
+asyncio.create_task(otomatik_ayrılma())
 
 
-async def auto_end():
+async def otomatik_sonlandırma():
     while not await asyncio.sleep(5):
-        ender = await is_autoend()
-        if not ender:
+        sonlandırıcı = await otomatik_sonlandırma_durumu()
+        if not sonlandırıcı:
             continue
-        for chat_id in autoend:
-            timer = autoend.get(chat_id)
-            if not timer:
+        for sohbet_id in otomatik_ayrılma:
+            zamanlayıcı = otomatik_ayrılma.get(sohbet_id)
+            if not zamanlayıcı:
                 continue
-            if datetime.now() > timer:
-                if not await is_active_chat(chat_id):
-                    autoend[chat_id] = {}
+            if datetime.now() > zamanlayıcı:
+                if not await is_active_chat(sohbet_id):
+                    otomatik_ayrılma[sohbet_id] = {}
                     continue
-                autoend[chat_id] = {}
+                otomatik_ayrılma[sohbet_id] = {}
                 try:
-                    await Anony.stop_stream(chat_id)
-                except:
-                    continue
-                try:
-                    await app.send_message(
-                        chat_id,
-                        "» ʙᴏᴛ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ʟᴇғᴛ ᴠɪᴅᴇᴏᴄʜᴀᴛ ʙᴇᴄᴀᴜsᴇ ɴᴏ ᴏɴᴇ ᴡᴀs ʟɪsᴛᴇɴɪɴɢ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.",
-                    )
-                except:
-                    continue
-
-
-asyncio.create_task(auto_end())
+                    await An
+                    
