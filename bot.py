@@ -7,8 +7,8 @@ from ..logging import LOGGER
 
 
 class Anony(Client):
-    def __init__(self):
-        LOGGER(__name__).info(f"Starting Bot...")
+    def __init__(self, dil):
+        LOGGER(__name__).info(f"Bot Başlatılıyor...")
         super().__init__(
             name="AnonXMusic",
             api_id=config.API_ID,
@@ -18,6 +18,7 @@ class Anony(Client):
             parse_mode=ParseMode.HTML,
             max_concurrent_transmissions=7,
         )
+        self.dil = dil
 
     async def start(self):
         await super().start()
@@ -29,26 +30,27 @@ class Anony(Client):
         try:
             await self.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"<u><b>» {self.mention} ʙᴏᴛ sᴛᴀʀᴛᴇᴅ :</b><u>\n\nɪᴅ : <code>{self.id}</code>\nɴᴀᴍᴇ : {self.name}\nᴜsᴇʀɴᴀᴍᴇ : @{self.username}",
+                text=f"<u><b>» {self.mention} bot başlatıldı :</b><u>\n\nID : <code>{self.id}</code>\nİsim : {self.name}\nKullanıcı Adı : @{self.username}",
             )
         except (errors.ChannelInvalid, errors.PeerIdInvalid):
             LOGGER(__name__).error(
-                "Bot has failed to access the log group/channel. Make sure that you have added your bot to your log group/channel."
+                "Bot, log grubu/kanalına erişemedi. Lütfen botunuzu log grubu/kanalınıza eklediğinizden emin olun."
             )
             exit()
         except Exception as ex:
             LOGGER(__name__).error(
-                f"Bot has failed to access the log group/channel.\n  Reason : {type(ex).__name__}."
+                f"Bot, log grubu/kanalına erişemedi.\n  Sebep: {type(ex).__name__}."
             )
             exit()
 
         a = await self.get_chat_member(config.LOGGER_ID, self.id)
         if a.status != ChatMemberStatus.ADMINISTRATOR:
             LOGGER(__name__).error(
-                "Please promote your bot as an admin in your log group/channel."
+                "Lütfen botunuzu log grubu/kanalında yönetici olarak atayın."
             )
             exit()
-        LOGGER(__name__).info(f"Music Bot Started as {self.name}")
+        LOGGER(__name__).info(f"Müzik Botu {self.name} olarak başlatıldı")
 
     async def stop(self):
         await super().stop()
+        
