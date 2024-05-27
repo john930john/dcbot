@@ -1,18 +1,19 @@
 import os
 
-from config import autoclean
+from config import otomatik_temizle
 
 
-async def auto_clean(popped):
+async def otomatik_temizle(poplanan):
     try:
-        rem = popped["file"]
-        autoclean.remove(rem)
-        count = autoclean.count(rem)
-        if count == 0:
-            if "vid_" not in rem or "live_" not in rem or "index_" not in rem:
+        silinecek = poplanan["file"]
+        otomatik_temizle.remove(silinecek)
+        sayı = otomatik_temizle.count(silinecek)
+        if sayı == 0:
+            if "vid_" not in silinecek or "canlı_" not in silinecek or "indeks_" not in silinecek:
                 try:
-                    os.remove(rem)
+                    os.remove(silinecek)
                 except:
                     pass
     except:
         pass
+        
