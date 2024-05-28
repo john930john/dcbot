@@ -1,23 +1,24 @@
-from AnonXMusic import app
-from AnonXMusic.utils.database import get_cmode
+from AnonXMusic import uygulama
+from AnonXMusic.utils.veritabanı import c_modunu_al
 
 
-async def get_channeplayCB(_, command, CallbackQuery):
-    if command == "c":
-        chat_id = await get_cmode(CallbackQuery.message.chat.id)
-        if chat_id is None:
+async def kanal_oynatma_modunu_alCB(_, komut, GeriAramaSorgusu):
+    if komut == "c":
+        sohbet_id = await c_modunu_al(GeriAramaSorgusu.message.chat.id)
+        if sohbet_id is None:
             try:
-                return await CallbackQuery.answer(_["setting_7"], show_alert=True)
+                return await GeriAramaSorgusu.answer(_["ayar_7"], show_alert=True)
             except:
                 return
         try:
-            channel = (await app.get_chat(chat_id)).title
+            kanal = (await uygulama.get_chat(sohbet_id)).title
         except:
             try:
-                return await CallbackQuery.answer(_["cplay_4"], show_alert=True)
+                return await GeriAramaSorgusu.answer(_["ççal_4"], show_alert=True)
             except:
                 return
     else:
-        chat_id = CallbackQuery.message.chat.id
-        channel = None
-    return chat_id, channel
+        sohbet_id = GeriAramaSorgusu.message.chat.id
+        kanal = None
+    return sohbet_id, kanal
+    
