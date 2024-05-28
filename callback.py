@@ -35,6 +35,14 @@ from config import (
 )
 from strings import get_string
 
+# Dil çevirilerini buraya ekleyin
+STRINGS_TR = {
+    "admin_1": "Müzik zaten durduruldu.",
+    "admin_2": "{} tarafından müzik duraklatıldı.",
+    "admin_3": "Müzik zaten çalıyor.",
+    # Diğer çeviriler...
+}
+
 checker = {}
 upvoters = {}
 
@@ -85,7 +93,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                 exists = confirmer[chat_id][CallbackQuery.message.id]
                 current = db[chat_id][0]
             except:
-                return await CallbackQuery.edit_message_text(f"ғᴀɪʟᴇᴅ.")
+                return await CallbackQuery.edit_message_text(f"Başarısız.")
             try:
                 if current["vidid"] != exists["vidid"]:
                     return await CallbackQuery.edit_message.text(_["admin_35"])
@@ -98,7 +106,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             except:
                 pass
             command = counter
-            mention = "ᴜᴘᴠᴏᴛᴇs"
+            mention = "Oylar"
         else:
             if (
                 CallbackQuery.from_user.id
@@ -160,7 +168,7 @@ async def del_back_playlist(client, CallbackQuery, _):
     elif command == "Skip" or command == "Replay":
         check = db.get(chat_id)
         if command == "Skip":
-            txt = f"➻ sᴛʀᴇᴀᴍ sᴋɪᴩᴩᴇᴅ 🎄\n│ \n└ʙʏ : {mention} 🥀"
+            txt = f"➻ Akış atlandı 🎄\n│ \n└Tarafından : {mention} 🥀"
             popped = None
             try:
                 popped = check.pop(0)
@@ -168,7 +176,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                     await auto_clean(popped)
                 if not check:
                     await CallbackQuery.edit_message_text(
-                        f"➻ sᴛʀᴇᴀᴍ sᴋɪᴩᴩᴇᴅ 🎄\n│ \n└ʙʏ : {mention} 🥀"
+                        f"➻ Akış atlandı 🎄\n│ \n└Tarafından : {mention} 🥀"
                     )
                     await CallbackQuery.message.reply_text(
                         text=_["admin_6"].format(
@@ -183,7 +191,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             except:
                 try:
                     await CallbackQuery.edit_message_text(
-                        f"➻ sᴛʀᴇᴀᴍ sᴋɪᴩᴩᴇᴅ 🎄\n│ \n└ʙʏ : {mention} 🥀"
+                        f"➻ Akış atlandı 🎄\n│ \n└Tarafından : {mention} 🥀"
                     )
                     await CallbackQuery.message.reply_text(
                         text=_["admin_6"].format(
@@ -195,7 +203,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                 except:
                     return
         else:
-            txt = f"➻ sᴛʀᴇᴀᴍ ʀᴇ-ᴘʟᴀʏᴇᴅ 🎄\n│ \n└ʙʏ : {mention} 🥀"
+            txt = f"➻ Akış yeniden oynatıldı 🎄\n│ \n└Tarafından : {mention} 🥀"
         await CallbackQuery.answer()
         queued = check[0]["file"]
         title = (check[0]["title"]).title()
@@ -395,3 +403,4 @@ async def markup_timer():
 
 
 asyncio.create_task(markup_timer())
+        
