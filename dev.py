@@ -14,120 +14,121 @@ from AnonXMusic import app
 from config import OWNER_ID
 
 
-async def aexec(code, client, message):
+async def aexec(kod, istemci, mesaj):
     exec(
-        "async def __aexec(client, message): "
-        + "".join(f"\n {a}" for a in code.split("\n"))
+        "async def __aexec(istemci, mesaj): "
+        + "".join(f"\n {a}" for a in kod.split("\n"))
     )
-    return await locals()["__aexec"](client, message)
+    return await locals()["__aexec"](istemci, mesaj)
 
 
-async def edit_or_reply(msg: Message, **kwargs):
-    func = msg.edit_text if msg.from_user.is_self else msg.reply
+async def düzenle_ya_da_yanıtla(msj: Message, **kwargs):
+    func = msj.edit_text if msj.from_user.is_self else msj.reply
     spec = getfullargspec(func.__wrapped__).args
     await func(**{k: v for k, v in kwargs.items() if k in spec})
 
 
 @app.on_edited_message(
-    filters.command("eval")
+    filters.command("değerlendir")
     & filters.user(OWNER_ID)
     & ~filters.forwarded
     & ~filters.via_bot
 )
 @app.on_message(
-    filters.command("eval")
+    filters.command("değerlendir")
     & filters.user(OWNER_ID)
     & ~filters.forwarded
     & ~filters.via_bot
 )
-async def executor(client: app, message: Message):
-    if len(message.command) < 2:
-        return await edit_or_reply(message, text="<b>ᴡʜᴀᴛ ʏᴏᴜ ᴡᴀɴɴᴀ ᴇxᴇᴄᴜᴛᴇ ʙᴀʙʏ ?</b>")
+async def yürütücü(istemci: app, mesaj: Message):
+    if len(mesaj.command) < 2:
+        return await düzenle_ya_da_yanıtla(mesaj, text="<b>Ne yürütmek istiyorsun?</b>")
     try:
-        cmd = message.text.split(" ", maxsplit=1)[1]
+        komut = mesaj.text.split(" ", maxsplit=1)[1]
     except IndexError:
-        return await message.delete()
+        return await mesaj.delete()
     t1 = time()
-    old_stderr = sys.stderr
-    old_stdout = sys.stdout
-    redirected_output = sys.stdout = StringIO()
-    redirected_error = sys.stderr = StringIO()
-    stdout, stderr, exc = None, None, None
+    eski_stderr = sys.stderr
+    eski_stdout = sys.stdout
+    yönlendirilmiş_çıktı = sys.stdout = StringIO()
+    yönlendirilmiş_hata = sys.stderr = StringIO()
+    çıktı, hata, exc = None, None, None
     try:
-        await aexec(cmd, client, message)
+        await aexec(komut, istemci, mesaj)
     except Exception:
         exc = traceback.format_exc()
-    stdout = redirected_output.getvalue()
-    stderr = redirected_error.getvalue()
-    sys.stdout = old_stdout
-    sys.stderr = old_stderr
-    evaluation = "\n"
+    çıktı = yönlendirilmiş_çıktı.getvalue()
+    hata = yönlendirilmiş_hata.getvalue()
+    sys.stdout = eski_stdout
+    sys.stderr = eski_stderr
+    değerlendirme = "\n"
     if exc:
-        evaluation += exc
-    elif stderr:
-        evaluation += stderr
-    elif stdout:
-        evaluation += stdout
+        değerlendirme += exc
+    elif hata:
+        değerlendirme += hata
+    elif çıktı:
+        değerlendirme += çıktı
     else:
-        evaluation += "Success"
-    final_output = f"<b>⥤ ʀᴇsᴜʟᴛ :</b>\n<pre language='python'>{evaluation}</pre>"
-    if len(final_output) > 4096:
-        filename = "output.txt"
-        with open(filename, "w+", encoding="utf8") as out_file:
-            out_file.write(str(evaluation))
+        değerlendirme += "Başarılı"
+    son_çıktı = f"<b>⥤ Sonuç :</b>\n<pre language='python'>{değerlendirme}</pre>"
+    if len(son_çıktı) > 4096:
+        dosya_adı = "çıktı.txt"
+        with open(dosya_adı, "w+", encoding="utf8") as out_file:
+            out_file.write(str(değerlendirme))
         t2 = time()
-        keyboard = InlineKeyboardMarkup(
+        klavye = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
                         text="⏳",
-                        callback_data=f"runtime {t2-t1} Seconds",
+                        callback_data=f"çalışmasüresi {t2-t1} Saniye",
                     )
                 ]
             ]
         )
-        await message.reply_document(
-            document=filename,
-            caption=f"<b>⥤ ᴇᴠᴀʟ :</b>\n<code>{cmd[0:980]}</code>\n\n<b>⥤ ʀᴇsᴜʟᴛ :</b>\nAttached Document",
+        await mesaj.reply_document(
+            document=dosya_adı,
+            caption=f"<b>⥤ Değerlendir :</b>\n<code>{komut[0:980]}</code>\n\n<b>⥤ Sonuç :</b>\nEkli Belge",
             quote=False,
-            reply_markup=keyboard,
+            reply_markup=klavye,
         )
-        await message.delete()
-        os.remove(filename)
+        await mesaj.delete()
+        os.remove(dosya_adı)
     else:
         t2 = time()
-        keyboard = InlineKeyboardMarkup(
+        klavye = InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
                         text="⏳",
-                        callback_data=f"runtime {round(t2-t1, 3)} Seconds",
+                        callback_data=f"çalışmasüresi {round(t2-t1, 3)} Saniye",
                     ),
                     InlineKeyboardButton(
                         text="🗑",
-                        callback_data=f"forceclose abc|{message.from_user.id}",
+                        callback_data=f"forceclose abc|{mesaj.from_user.id}",
                     ),
                 ]
             ]
         )
-        await edit_or_reply(message, text=final_output, reply_markup=keyboard)
+        await düzenle_ya_da_yanıtla(mesaj, text=son_çıktı, reply_markup=klavye)
 
 
-@app.on_callback_query(filters.regex(r"runtime"))
-async def runtime_func_cq(_, cq):
-    runtime = cq.data.split(None, 1)[1]
-    await cq.answer(runtime, show_alert=True)
+@app.on_callback_query(filters.regex(r"çalışmasüresi"))
+async def çalışmasüresi_fonk_cq(_, cq):
+    çalışmasüresi = cq.data.split(None, 1)[1]
+    await cq.answer(çalışmasüresi, show_alert=True)
 
 
 @app.on_callback_query(filters.regex("forceclose"))
 async def forceclose_command(_, CallbackQuery):
     callback_data = CallbackQuery.data.strip()
     callback_request = callback_data.split(None, 1)[1]
-    query, user_id = callback_request.split("|")
+    sorgu, user_id = callback_request.split("|")
     if CallbackQuery.from_user.id != int(user_id):
         try:
             return await CallbackQuery.answer(
-                "» ɪᴛ'ʟʟ ʙᴇ ʙᴇᴛᴛᴇʀ ɪғ ʏᴏᴜ sᴛᴀʏ ɪɴ ʏᴏᴜʀ ʟɪᴍɪᴛs ʙᴀʙʏ.", show_alert=True
+                "» Sınırlarında kalmak daha iyi olurdu.",
+                show_alert=True
             )
         except:
             return
@@ -150,14 +151,16 @@ async def forceclose_command(_, CallbackQuery):
     & ~filters.forwarded
     & ~filters.via_bot
 )
-async def shellrunner(_, message: Message):
-    if len(message.command) < 2:
-        return await edit_or_reply(message, text="<b>ᴇxᴀᴍᴩʟᴇ :</b>\n/sh git pull")
-    text = message.text.split(None, 1)[1]
-    if "\n" in text:
-        code = text.split("\n")
-        output = ""
-        for x in code:
+async def shellrunner(_, mesaj: Message):
+    if len(mesaj.command) < 2:
+        return await düzenle_ya_da_yanıtla(
+            mesaj, text="<b>Örnek :</b>\n/sh git pull"
+        )
+    metin = mesaj.text.split(None, 1)[1]
+    if "\n" in metin:
+        kod = metin.split("\n")
+        çıktı = ""
+        for x in kod:
             shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", x)
             try:
                 process = subprocess.Popen(
@@ -166,12 +169,14 @@ async def shellrunner(_, message: Message):
                     stderr=subprocess.PIPE,
                 )
             except Exception as err:
-                await edit_or_reply(message, text=f"<b>ERROR :</b>\n<pre>{err}</pre>")
-            output += f"<b>{code}</b>\n"
-            output += process.stdout.read()[:-1].decode("utf-8")
-            output += "\n"
+                await düzenle_ya_da_yanıtla(
+                    mesaj, text=f"<b>HATA :</b>\n<pre>{err}</pre>"
+                )
+            çıktı += f"<b>{kod}</b>\n"
+            çıktı += process.stdout.read()[:-1].decode("utf-8")
+            çıktı += "\n"
     else:
-        shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", text)
+        shell = re.split(""" (?=(?:[^'"]|'[^']*'|"[^"]*")*$)""", metin)
         for a in range(len(shell)):
             shell[a] = shell[a].replace('"', "")
         try:
@@ -183,29 +188,30 @@ async def shellrunner(_, message: Message):
         except Exception as err:
             print(err)
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            errors = traceback.format_exception(
+            hatalar = traceback.format_exception(
                 etype=exc_type,
                 value=exc_obj,
                 tb=exc_tb,
             )
-            return await edit_or_reply(
-                message, text=f"<b>ERROR :</b>\n<pre>{''.join(errors)}</pre>"
+            return await düzenle_ya_da_yanıtla(
+                mesaj, text=f"<b>HATA :</b>\n<pre>{''.join(hatalar)}</pre>"
             )
-        output = process.stdout.read()[:-1].decode("utf-8")
-    if str(output) == "\n":
-        output = None
-    if output:
-        if len(output) > 4096:
-            with open("output.txt", "w+") as file:
-                file.write(output)
+        çıktı = process.stdout.read()[:-1].decode("utf-8")
+    if str(çıktı) == "\n":
+        çıktı = None
+    if çıktı:
+        if len(çıktı) > 4096:
+            with open("çıktı.txt", "w+") as dosya:
+                dosya.write(çıktı)
             await app.send_document(
-                message.chat.id,
-                "output.txt",
-                reply_to_message_id=message.id,
-                caption="<code>Output</code>",
+                mesaj.chat.id,
+                "çıktı.txt",
+                reply_to_message_id=mesaj.id,
+                caption="<code>Çıktı</code>",
             )
-            return os.remove("output.txt")
-        await edit_or_reply(message, text=f"<b>OUTPUT :</b>\n<pre>{output}</pre>")
+            return os.remove("çıktı.txt")
+        await düzenle_ya_da_yanıtla(mesaj, text=f"<b>ÇIKTI :</b>\n<pre>{çıktı}</pre>")
     else:
-        await edit_or_reply(message, text="<b>OUTPUT :</b>\n<code>None</code>")
-    await message.stop_propagation()
+        await düzenle_ya_da_yanıtla(mesaj, text="<b>ÇIKTI :</b>\n<code>Yok</code>")
+    await mesaj.stop_propagation()
+        
