@@ -1,12 +1,11 @@
-# Copyright (C) 2024 by Alexa_Help @ Github, < https://github.com/TheTeamAlexa >
-# Subscribe On YT < Jankari Ki Duniya >. All rights reserved. © Alexa © Yukki.
+# Telif Hakkı (C) 2024 Alexa_Help @ Github, < https://github.com/TheTeamAlexa >
+# YT'de Abone Olun < Jankari Ki Dünya >. Tüm hakları saklıdır. © Alexa © Yukki.
 
 """"
-TheTeamAlexa is a project of Telegram bots with variety of purposes.
-Copyright (c) 2024 -present Team=Alexa <https://github.com/TheTeamAlexa>
+TheTeamAlexa, çeşitli amaçlar için Telegram botlarının bir projesidir.
+Telif Hakkı (c) 2024 -günümüz Team=Alexa <https://github.com/TheTeamAlexa>
 
-This program is free software: you can redistribute it and can modify
-as you want or you can collabe if you have new ideas.
+Bu program özgür yazılımdır: yeniden dağıtabilir ve istediğiniz gibi değiştirebilirsiniz veya yeni fikirlere katkıda bulunabilirsiniz.
 """
 
 
@@ -15,346 +14,339 @@ from config import PRIVATE_BOT_MODE
 from AnonXmusic.core.mongo import mongodb
 
 channeldb = mongodb.cplaymode
-commanddb = mongodb.commands
-cleandb = mongodb.cleanmode
-playmodedb = mongodb.playmode
-playtypedb = mongodb.playtypedb
-langdb = mongodb.language
-authdb = mongodb.adminauth
-videodb = mongodb.yukkivideocalls
-onoffdb = mongodb.onoffper
-suggdb = mongodb.suggestion
-autoenddb = mongodb.autoend
+commanddb = mongodb.komutlar
+cleandb = mongodb.temizmod
+playmodedb = mongodb.çalma_modu
+playtypedb = mongodb.çalma_tipi_db
+langdb = mongodb.dil
+authdb = mongodb.yöneticiauth
+videodb = mongodb.yukkivideogörüşmeleri
+onoffdb = mongodb.açıkkapalıper
+suggdb = mongodb.öneri
+autoenddb = mongodb.otomatikson
 
 
-# Shifting to memory [ mongo sucks often]
-loop = {}
-playtype = {}
-playmode = {}
-channelconnect = {}
-langm = {}
-pause = {}
-mute = {}
-audio = {}
+# Bellek'e geçiş [mongo sık sık sıkıntı çıkarır]
+döngü = {}
+çalma_tipi = {}
+çalma_modu = {}
+kanalbağlantısı = {}
+dilmodu = {}
+duraklat = {}
+sessiz = {}
+ses = {}
 video = {}
-active = []
-activevideo = []
-command = []
-cleanmode = []
-nonadmin = {}
+aktif = []
+aktifvideo = []
+komut = []
+temizmod = []
+yöneticidışı = {}
 vlimit = []
-maintenance = []
-suggestion = {}
-autoend = {}
+bakım = []
+öneri = {}
+otomatikson = {}
 
 
-# Auto End Stream
+# Otomatik Bitiş Akışı
 
 
-async def is_autoend() -> bool:
-    chat_id = 123
-    mode = autoend.get(chat_id)
-    if not mode:
-        user = await autoenddb.find_one({"chat_id": chat_id})
-        if not user:
-            autoend[chat_id] = False
+async def otomatikson() -> bool:
+    sohbet_id = 123
+    mod = otomatikson.get(sohbet_id)
+    if not mod:
+        kullanıcı = await autoenddb.find_one({"sohbet_id": sohbet_id})
+        if not kullanıcı:
+            otomatikson[sohbet_id] = False
             return False
-        autoend[chat_id] = True
+        otomatikson[sohbet_id] = True
         return True
-    return mode
+    return mod
 
 
-async def autoend_on():
-    chat_id = 123
-    autoend[chat_id] = True
-    user = await autoenddb.find_one({"chat_id": chat_id})
-    if not user:
-        return await autoenddb.insert_one({"chat_id": chat_id})
+async def otomatikson_aç():
+    sohbet_id = 123
+    otomatikson[sohbet_id] = True
+    kullanıcı = await autoenddb.find_one({"sohbet_id": sohbet_id})
+    if not kullanıcı:
+        return await autoenddb.insert_one({"sohbet_id": sohbet_id})
 
 
-async def autoend_off():
-    chat_id = 123
-    autoend[chat_id] = False
-    user = await autoenddb.find_one({"chat_id": chat_id})
-    if user:
-        return await autoenddb.delete_one({"chat_id": chat_id})
+async def otomatikson_kapat():
+    sohbet_id = 123
+    otomatikson[sohbet_id] = False
+    kullanıcı = await autoenddb.find_one({"sohbet_id": sohbet_id})
+    if kullanıcı:
+        return await autoenddb.delete_one({"sohbet_id": sohbet_id})
 
 
-# SUGGESTION
+# ÖNERİ
 
 
-async def is_suggestion(chat_id: int) -> bool:
-    mode = suggestion.get(chat_id)
-    if not mode:
-        user = await suggdb.find_one({"chat_id": chat_id})
-        if not user:
-            suggestion[chat_id] = True
+async def öneri_mi(sohbet_id: int) -> bool:
+    mod = öneri.get(sohbet_id)
+    if not mod:
+        kullanıcı = await suggdb.find_one({"sohbet_id": sohbet_id})
+        if not kullanıcı:
+            öneri[sohbet_id] = True
             return True
-        suggestion[chat_id] = False
+        öneri[sohbet_id] = False
         return False
-    return mode
+    return mod
 
 
-async def suggestion_on(chat_id: int):
-    suggestion[chat_id] = True
-    user = await suggdb.find_one({"chat_id": chat_id})
-    if user:
-        return await suggdb.delete_one({"chat_id": chat_id})
+async def öneri_aç(sohbet_id: int):
+    öneri[sohbet_id] = True
+    kullanıcı = await suggdb.find_one({"sohbet_id": sohbet_id})
+    if kullanıcı:
+        return await suggdb.delete_one({"sohbet_id": sohbet_id})
 
 
-async def suggestion_off(chat_id: int):
-    suggestion[chat_id] = False
-    user = await suggdb.find_one({"chat_id": chat_id})
-    if not user:
-        return await suggdb.insert_one({"chat_id": chat_id})
+async def öneri_kapat(sohbet_id: int):
+    öneri[sohbet_id] = False
+    kullanıcı = await suggdb.find_one({"sohbet_id": sohbet_id})
+    if not kullanıcı:
+        return await suggdb.insert_one({"sohbet_id": sohbet_id})
 
 
-# LOOP PLAY
-async def get_loop(chat_id: int) -> int:
-    lop = loop.get(chat_id)
-    if not lop:
-        return 0
-    return lop
+# DÖNGÜ OYNA
+async def döngü_ayarla(sohbet_id: int, mod: int):
+    döngü[sohbet_id] = mod
 
 
-async def set_loop(chat_id: int, mode: int):
-    loop[chat_id] = mode
-
-
-# Channel Play IDS
-async def get_cmode(chat_id: int) -> int:
-    mode = channelconnect.get(chat_id)
-    if not mode:
-        mode = await channeldb.find_one({"chat_id": chat_id})
-        if not mode:
+# Kanal Oynatma Kimliği
+async def kanal_modu_al(sohbet_id: int) -> int:
+    mod = kanalbağlantısı.get(sohbet_id)
+    if not mod:
+        mod = await channeldb.find_one({"sohbet_id": sohbet_id})
+        if not mod:
             return None
-        channelconnect[chat_id] = mode["mode"]
-        return mode["mode"]
-    return mode
+        kanalbağlantısı[sohbet_id] = mod["mod"]
+        return mod["mod"]
+    return mod
 
 
-async def set_cmode(chat_id: int, mode: int):
-    channelconnect[chat_id] = mode
+async def kanal_modu_ayarla(sohbet_id: int, mod: int):
+    kanalbağlantısı[sohbet_id] = mod
     await channeldb.update_one(
-        {"chat_id": chat_id}, {"$set": {"mode": mode}}, upsert=True
+        {"sohbet_id": sohbet_id}, {"$set": {"mod": mod}}, upsert=True
     )
 
 
-# PLAY TYPE WHETHER ADMINS ONLY OR EVERYONE
-async def get_playtype(chat_id: int) -> str:
-    mode = playtype.get(chat_id)
-    if not mode:
-        mode = await playtypedb.find_one({"chat_id": chat_id})
-        if not mode:
-            playtype[chat_id] = "Everyone"
-            return "Everyone"
-        playtype[chat_id] = mode["mode"]
-        return mode["mode"]
-    return mode
+# ÇALMA TİPİ YÖNETİMİ SADECE YÖNETİCİLER veya HERKES İÇİN
+async def çalma_tipi_al(sohbet_id: int) -> str:
+    mod = çalma_tipi.get(sohbet_id)
+    if not mod:
+        mod = await playtypedb.find_one({"sohbet_id": sohbet_id})
+        if not mod:
+            çalma_tipi[sohbet_id] = "Herkese"
+            return "Herkese"
+        çalma_tipi[sohbet_id] = mod["mod"]
+        return mod["mod"]
+    return mod
 
 
-async def set_playtype(chat_id: int, mode: str):
-    playtype[chat_id] = mode
+async def çalma_tipi_ayarla(sohbet_id: int, mod: str):
+    çalma_tipi[sohbet_id] = mod
     await playtypedb.update_one(
-        {"chat_id": chat_id}, {"$set": {"mode": mode}}, upsert=True
+        {"sohbet_id": sohbet_id}, {"$set": {"mod": mod}}, upsert=True
     )
 
 
-# play mode whether inline or direct query
-async def get_playmode(chat_id: int) -> str:
-    mode = playmode.get(chat_id)
-    if not mode:
-        mode = await playmodedb.find_one({"chat_id": chat_id})
-        if not mode:
-            playmode[chat_id] = "Direct"
-            return "Direct"
-        playmode[chat_id] = mode["mode"]
-        return mode["mode"]
-    return mode
+# çalma modu: doğrudan veya çevrimiçi sorgu
+async def çalma_modu_al(sohbet_id: int) -> str:
+    mod = çalma_modu.get(sohbet_id)
+    if not mod:
+        mod = await playmodedb.find_one({"sohbet_id": sohbet_id})
+        if not mod:
+            çalma_modu[sohbet_id] = "Doğrudan"
+            return "Doğrudan"
+        çalma_modu[sohbet_id] = mod["mod"]
+        return mod["mod"]
+    return mod
 
 
-async def set_playmode(chat_id: int, mode: str):
-    playmode[chat_id] = mode
+async def çalma_modu_ayarla(sohbet_id: int, mod: str):
+    çalma_modu[sohbet_id] = mod
     await playmodedb.update_one(
-        {"chat_id": chat_id}, {"$set": {"mode": mode}}, upsert=True
+        {"sohbet_id": sohbet_id}, {"$set": {"mod": mod}}, upsert=True
     )
 
 
-# language
-async def get_lang(chat_id: int) -> str:
-    mode = langm.get(chat_id)
-    if not mode:
-        lang = await langdb.find_one({"chat_id": chat_id})
-        if not lang:
-            langm[chat_id] = "en"
-            return "en"
-        langm[chat_id] = lang["lang"]
-        return lang["lang"]
-    return mode
+# dil
+async def dil_al(sohbet_id: int) -> str:
+    mod = dilmodu.get(sohbet_id)
+    if not mod:
+        dil = await langdb.find_one({"sohbet_id": sohbet_id})
+        if not dil:
+            dilmodu[sohbet_id] = "tr"
+            return "tr"
+        dilmodu[sohbet_id] = dil["lang"]
+        return dil["lang"]
+    return mod
 
 
-async def set_lang(chat_id: int, lang: str):
-    langm[chat_id] = lang
-    await langdb.update_one({"chat_id": chat_id}, {"$set": {"lang": lang}}, upsert=True)
+async def dil_ayarla(sohbet_id: int, dil: str):
+    dilmodu[sohbet_id] = dil
+    await langdb.update_one({"sohbet_id": sohbet_id}, {"$set": {"lang": dil}}, upsert=True)
 
 
-# Muted
-async def is_muted(chat_id: int) -> bool:
-    mode = mute.get(chat_id)
-    if not mode:
+# Sessiz
+async def sessiz_mi(sohbet_id: int) -> bool:
+    mod = sessiz.get(sohbet_id)
+    if not mod:
         return False
-    return mode
+    return mod
 
 
-async def mute_on(chat_id: int):
-    mute[chat_id] = True
+async def sessiz_aç(sohbet_id: int):
+    sessiz[sohbet_id] = True
 
 
-async def mute_off(chat_id: int):
-    mute[chat_id] = False
+async def sessiz_kapat(sohbet_id: int):
+    sessiz[sohbet_id] = False
 
 
-# Pause-Skip
-async def is_music_playing(chat_id: int) -> bool:
-    mode = pause.get(chat_id)
-    if not mode:
+# Duraklat-Geç
+async def müzik_duraklat(sohbet_id: int) -> bool:
+    mod = duraklat.get(sohbet_id)
+    if not mod:
         return False
-    return mode
+    return mod
 
 
-async def music_on(chat_id: int):
-    pause[chat_id] = True
+async def müzik_duraklat_aç(sohbet_id: int):
+    duraklat[sohbet_id] = True
 
 
-async def music_off(chat_id: int):
-    pause[chat_id] = False
+async def müzik_duraklat_kapat(sohbet_id: int):
+    duraklat[sohbet_id] = False
 
 
-# Active Voice Chats
-async def get_active_chats() -> list:
-    return active
+# Aktif Sesli Sohbetler
+async def aktif_sesli_sohbetler() -> list:
+    return aktif
 
 
-async def is_active_chat(chat_id: int) -> bool:
-    if chat_id not in active:
-        return False
-    else:
-        return True
-
-
-async def add_active_chat(chat_id: int):
-    if chat_id not in active:
-        active.append(chat_id)
-
-
-async def remove_active_chat(chat_id: int):
-    if chat_id in active:
-        active.remove(chat_id)
-
-
-# Active Video Chats
-async def get_active_video_chats() -> list:
-    return activevideo
-
-
-async def is_active_video_chat(chat_id: int) -> bool:
-    if chat_id not in activevideo:
+async def aktif_sesli_sohbet_mi(sohbet_id: int) -> bool:
+    if sohbet_id not in aktif:
         return False
     else:
         return True
 
 
-async def add_active_video_chat(chat_id: int):
-    if chat_id not in activevideo:
-        activevideo.append(chat_id)
+async def aktif_sesli_sohbet_ekle(sohbet_id: int):
+    if sohbet_id not in aktif:
+        aktif.append(sohbet_id)
 
 
-async def remove_active_video_chat(chat_id: int):
-    if chat_id in activevideo:
-        activevideo.remove(chat_id)
+async def aktif_sesli_sohbet_kaldır(sohbet_id: int):
+    if sohbet_id in aktif:
+        aktif.remove(sohbet_id)
 
 
-# Delete command mode
-async def is_commanddelete_on(chat_id: int) -> bool:
-    if chat_id not in command:
+# Aktif Video Sohbetler
+async def aktif_video_sohbetler() -> list:
+    return aktifvideo
+
+
+async def aktif_video_sohbet_mi(sohbet_id: int) -> bool:
+    if sohbet_id not in aktifvideo:
+        return False
+    else:
+        return True
+
+
+async def aktif_video_sohbet_ekle(sohbet_id: int):
+    if sohbet_id not in aktifvideo:
+        aktifvideo.append(sohbet_id)
+
+
+async def aktif_video_sohbet_kaldır(sohbet_id: int):
+    if sohbet_id in aktifvideo:
+        aktifvideo.remove(sohbet_id)
+
+
+# Komut Silme Modu
+async def komut_silme_modu_aktif_mi(sohbet_id: int) -> bool:
+    if sohbet_id not in komut:
         return True
     else:
         return False
 
 
-async def commanddelete_off(chat_id: int):
-    if chat_id not in command:
-        command.append(chat_id)
+async def komut_silme_modu_kapat(sohbet_id: int):
+    if sohbet_id not in komut:
+        komut.append(sohbet_id)
 
 
-async def commanddelete_on(chat_id: int):
+async def komut_silme_modu_aktif_et(sohbet_id: int):
     try:
-        command.remove(chat_id)
+        komut.remove(sohbet_id)
     except:
         pass
 
 
-# Clean Mode
-async def is_cleanmode_on(chat_id: int) -> bool:
-    if chat_id not in cleanmode:
+# Temizleme Modu
+async def temizleme_modu_aktif_mi(sohbet_id: int) -> bool:
+    if sohbet_id not in temizmod:
         return True
     else:
         return False
 
 
-async def cleanmode_off(chat_id: int):
-    if chat_id not in cleanmode:
-        cleanmode.append(chat_id)
+async def temizleme_modu_kapat(sohbet_id: int):
+    if sohbet_id not in temizmod:
+        temizmod.append(sohbet_id)
 
 
-async def cleanmode_on(chat_id: int):
+async def temizleme_modu_aktif_et(sohbet_id: int):
     try:
-        cleanmode.remove(chat_id)
+        temizmod.remove(sohbet_id)
     except:
         pass
 
 
-# Non Admin Chat
-async def check_nonadmin_chat(chat_id: int) -> bool:
-    user = await authdb.find_one({"chat_id": chat_id})
-    if not user:
+# Yönetici Olmayan Sohbet
+async def yönetici_olmayan_sohbet_kontrol(sohbet_id: int) -> bool:
+    kullanıcı = await authdb.find_one({"sohbet_id": sohbet_id})
+    if not kullanıcı:
         return False
     return True
 
 
-async def is_nonadmin_chat(chat_id: int) -> bool:
-    mode = nonadmin.get(chat_id)
-    if not mode:
-        user = await authdb.find_one({"chat_id": chat_id})
-        if not user:
-            nonadmin[chat_id] = False
+async def yönetici_olmayan_sohbet_mi(sohbet_id: int) -> bool:
+    mod = yöneticidışı.get(sohbet_id)
+    if not mod:
+        kullanıcı = await authdb.find_one({"sohbet_id": sohbet_id})
+        if not kullanıcı:
+            yöneticidışı[sohbet_id] = False
             return False
-        nonadmin[chat_id] = True
+        yöneticidışı[sohbet_id] = True
         return True
-    return mode
+    return mod
 
 
-async def add_nonadmin_chat(chat_id: int):
-    nonadmin[chat_id] = True
-    is_admin = await check_nonadmin_chat(chat_id)
-    if is_admin:
+async def yönetici_olmayan_sohbet_ekle(sohbet_id: int):
+    yöneticidışı[sohbet_id] = True
+    yönetici_mi = await yönetici_olmayan_sohbet_kontrol(sohbet_id)
+    if yönetici_mi:
         return
-    return await authdb.insert_one({"chat_id": chat_id})
+    return await authdb.insert_one({"sohbet_id": sohbet_id})
 
 
-async def remove_nonadmin_chat(chat_id: int):
-    nonadmin[chat_id] = False
-    is_admin = await check_nonadmin_chat(chat_id)
-    if not is_admin:
+async def yönetici_olmayan_sohbet_kaldır(sohbet_id: int):
+    yöneticidışı[sohbet_id] = False
+    yönetici_mi = await yönetici_olmayan_sohbet_kontrol(sohbet_id)
+    if not yönetici_mi:
         return
-    return await authdb.delete_one({"chat_id": chat_id})
+    return await authdb.delete_one({"sohbet_id": sohbet_id})
 
 
-# Video Limit
-async def is_video_allowed(chat_idd) -> str:
-    chat_id = 123456
+# Video Limiti
+async def video_izinli_mi(sohbet_idd) -> str:
+    sohbet_id = 123456
     if not vlimit:
-        dblimit = await videodb.find_one({"chat_id": chat_id})
+        dblimit = await videodb.find_one({"sohbet_id": sohbet_id})
         if not dblimit:
             vlimit.clear()
             vlimit.append(config.VIDEO_STREAM_LIMIT)
@@ -367,17 +359,17 @@ async def is_video_allowed(chat_idd) -> str:
         limit = vlimit[0]
     if limit == 0:
         return False
-    count = len(await get_active_video_chats())
-    if int(count) == int(limit):
-        if not await is_active_video_chat(chat_idd):
+    sayı = len(await aktif_video_sohbetler())
+    if int(sayı) == int(limit):
+        if not await aktif_video_sohbet_mi(sohbet_idd):
             return False
     return True
 
 
-async def get_video_limit() -> str:
-    chat_id = 123456
+async def video_limiti_al() -> str:
+    sohbet_id = 123456
     if not vlimit:
-        dblimit = await videodb.find_one({"chat_id": chat_id})
+        dblimit = await videodb.find_one({"sohbet_id": sohbet_id})
         if not dblimit:
             limit = config.VIDEO_STREAM_LIMIT
         else:
@@ -387,127 +379,128 @@ async def get_video_limit() -> str:
     return limit
 
 
-async def set_video_limit(limt: int):
-    chat_id = 123456
+async def video_limiti_ayarla(limt: int):
+    sohbet_id = 123456
     vlimit.clear()
     vlimit.append(limt)
     return await videodb.update_one(
-        {"chat_id": chat_id}, {"$set": {"limit": limt}}, upsert=True
+        {"sohbet_id": sohbet_id}, {"$set": {"limit": limt}}, upsert=True
     )
 
 
-# On Off
-async def is_on_off(on_off: int) -> bool:
-    onoff = await onoffdb.find_one({"on_off": on_off})
-    if not onoff:
+# Açık Kapalı
+async def açıkkapalı(on_off: int) -> bool:
+    açık_kapalı = await onoffdb.find_one({"aç_kapa": on_off})
+    if not açık_kapalı:
         return False
     return True
 
 
-async def add_on(on_off: int):
-    is_on = await is_on_off(on_off)
-    if is_on:
+async def aç_ekle(aç_kapa: int):
+    açık_mı = await açıkkapalı(aç_kapa)
+    if açık_mı:
         return
-    return await onoffdb.insert_one({"on_off": on_off})
+    return await onoffdb.insert_one({"aç_kapa": aç_kapa})
 
 
-async def add_off(on_off: int):
-    is_off = await is_on_off(on_off)
-    if not is_off:
+async def kapat(aç_kapa: int):
+    kapalı_mı = await açıkkapalı(aç_kapa)
+    if not kapalı_mı:
         return
-    return await onoffdb.delete_one({"on_off": on_off})
+    return await onoffdb.delete_one({"aç_kapa": aç_kapa})
 
 
-# Maintenance
+# Bakım
 
 
-async def is_maintenance():
-    if not maintenance:
-        get = await onoffdb.find_one({"on_off": 1})
+async def bakım_mı():
+    if not bakım:
+        get = await onoffdb.find_one({"aç_kapa": 1})
         if not get:
-            maintenance.clear()
-            maintenance.append(2)
+            bakım.clear()
+            bakım.append(2)
             return True
         else:
-            maintenance.clear()
-            maintenance.append(1)
+            bakım.clear()
+            bakım.append(1)
             return False
     else:
-        if 1 in maintenance:
+        if 1 in bakım:
             return False
         else:
             return True
 
 
-async def maintenance_off():
-    maintenance.clear()
-    maintenance.append(2)
-    is_off = await is_on_off(1)
-    if not is_off:
+async def bakım_kapat():
+    bakım.clear()
+    bakım.append(2)
+    kapalı_mı = await açıkkapalı(1)
+    if not kapalı_mı:
         return
-    return await onoffdb.delete_one({"on_off": 1})
+    return await onoffdb.delete_one({"aç_kapa": 1})
 
 
-async def maintenance_on():
-    maintenance.clear()
-    maintenance.append(1)
-    is_on = await is_on_off(1)
-    if is_on:
+async def bakım_aç():
+    bakım.clear()
+    bakım.append(1)
+    açık_mı = await açıkkapalı(1)
+    if açık_mı:
         return
-    return await onoffdb.insert_one({"on_off": 1})
+    return await onoffdb.insert_one({"aç_kapa": 1})
 
 
-# Audio Video Limit
+# Sesli Video Limiti
 
-from pytgcalls.types import AudioParameters, AudioQuality, VideoParameters, VideoQuality
-
-
-async def save_audio_bitrate(chat_id: int, bitrate: str):
-    audio[chat_id] = bitrate
+from pytgcalls.types import SesParametreleri, SesKalitesi, VideoParametreleri, VideoKalitesi
 
 
-async def save_video_bitrate(chat_id: int, bitrate: str):
-    video[chat_id] = bitrate
+async def ses_bit_dosyası_kaydet(sohbet_id: int, bit_oranı: str):
+    ses[sohbet_id] = bit_oranı
 
 
-async def get_aud_bit_name(chat_id: int) -> str:
-    mode = audio.get(chat_id)
-    return "HIGH" if not mode else mode
+async def video_bit_dosyası_kaydet(sohbet_id: int, bit_oranı: str):
+    video[sohbet_id] = bit_oranı
 
 
-async def get_vid_bit_name(chat_id: int) -> str:
-    mode = video.get(chat_id)
-    return "FHD_1080p" if not mode else mode
+async def ses_bit_ismi_al(sohbet_id: int) -> str:
+    mod = ses.get(sohbet_id)
+    return "YÜKSEK" if not mod else mod
 
 
-async def get_audio_bitrate(chat_id: int) -> str:
-    mode = audio.get(chat_id)
-    if not mode:
-        return AudioParameters.from_quality(AudioQuality.STUDIO)
-    if str(mode) == "STUDIO":
-        return AudioParameters.from_quality(AudioQuality.STUDIO)
-    elif str(mode) == "HIGH":
-        return AudioParameters.from_quality(AudioQuality.HIGH)
-    elif str(mode) == "MEDIUM":
-        return AudioParameters.from_quality(AudioQuality.MEDIUM)
-    elif str(mode) == "LOW":
-        return AudioParameters.from_quality(AudioQuality.LOW)
+async def video_bit_ismi_al(sohbet_id: int) -> str:
+    mod = video.get(sohbet_id)
+    return "FHD_1080p" if not mod else mod
 
 
-async def get_video_bitrate(chat_id: int) -> str:
-    mode = video.get(chat_id)
-    if not mode:
+async def ses_bit_oranı_al(sohbet_id: int) -> str:
+    mod = ses.get(sohbet_id)
+    if not mod:
+        return SesParametreleri.kaliteden(SesKalitesi.STÜDYO)
+    if str(mod) == "STÜDYO":
+        return SesParametreleri.kaliteden(SesKalitesi.STÜDYO)
+    elif str(mod) == "YÜKSEK":
+        return SesParametreleri.kaliteden(SesKalitesi.YÜKSEK)
+    elif str(mod) == "ORTA":
+        return SesParametreleri.kaliteden(SesKalitesi.ORTA)
+    elif str(mod) == "DÜŞÜK":
+        return SesParametreleri.kaliteden(SesKalitesi.DÜŞÜK)
+
+
+async def video_bit_oranı_al(sohbet_id: int) -> str:
+    mod = video.get(sohbet_id)
+    if not mod:
         if PRIVATE_BOT_MODE == str(True):
-            return VideoParameters.from_quality(VideoQuality.FHD_1080p)
+            return VideoParametreleri.kaliteden(VideoKalitesi.FHD_1080p)
         else:
-            return VideoParameters.from_quality(VideoQuality.HD_720p)
-    if str(mode) == "QHD_2K":
-        return VideoParameters.from_quality(VideoQuality.QHD_2K)
-    elif str(mode) == "FHD_1080p":
-        return VideoParameters.from_quality(VideoQuality.FHD_1080p)
-    elif str(mode) == "HD_720p":
-        return VideoParameters.from_quality(VideoQuality.HD_720p)
-    elif str(mode) == "SD_480p":
-        return VideoParameters.from_quality(VideoQuality.SD_480p)
-    elif str(mode) == "SD_360p":
-        return VideoParameters.from_quality(VideoQuality.SD_360p)
+            return VideoParametreleri.kaliteden(VideoKalitesi.HD_720p)
+    if str(mod) == "QHD_2K":
+        return VideoParametreleri.kaliteden(VideoKalitesi.QHD_2K)
+    elif str(mod) == "FHD_1080p":
+        return VideoParametreleri.kaliteden(VideoKalitesi.FHD_1080p)
+    elif str(mod) == "HD_720p":
+        return VideoParametreleri.kaliteden(VideoKalitesi.HD_720p)
+    elif str(mod) == "SD_480p":
+        return VideoParametreleri.kaliteden(VideoKalitesi.SD_480p)
+    elif str(mod) == "SD_360p":
+        return VideoParametreleri.kaliteden(VideoKalitesi.SD_360p)
+    
