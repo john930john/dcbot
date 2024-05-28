@@ -7,7 +7,7 @@ from AnonXMusic.utils.stream.stream import stream
 from config import BANNED_USERS
 
 
-@app.on_callback_query(filters.regex("LiveStream") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex("CanlıYayın") & ~BANNED_USERS)
 @languageCB
 async def play_live_stream(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
@@ -56,5 +56,6 @@ async def play_live_stream(client, CallbackQuery, _):
             err = e if ex_type == "AssistantErr" else _["general_2"].format(ex_type)
             return await mystic.edit_text(err)
     else:
-        return await mystic.edit_text("» ɴᴏᴛ ᴀ ʟɪᴠᴇ sᴛʀᴇᴀᴍ.")
+        return await mystic.edit_text("» Canlı yayın değil.")
     await mystic.delete()
+    
