@@ -1,42 +1,42 @@
 from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent
 
-answer = []
+yanıt = []
 
-answer.extend(
+yanıt.extend(
     [
         InlineQueryResultArticle(
-            title="Pᴀᴜsᴇ",
-            description=f"ᴩᴀᴜsᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.",
+            title="Duraklat",
+            description=f"Geçerli çalan yayını video sohbet üzerinde duraklatır.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/pause"),
         ),
         InlineQueryResultArticle(
-            title="Rᴇsᴜᴍᴇ",
-            description=f"ʀᴇsᴜᴍᴇ ᴛʜᴇ ᴩᴀᴜsᴇᴅ sᴛʀᴇᴀᴍ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.",
+            title="Devam",
+            description=f"Duraklatılmış yayını video sohbet üzerinde devam ettirir.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/resume"),
         ),
         InlineQueryResultArticle(
-            title="Sᴋɪᴩ",
-            description=f"sᴋɪᴩ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ ᴀɴᴅ ᴍᴏᴠᴇs ᴛᴏ ᴛʜᴇ ɴᴇxᴛ sᴛʀᴇᴀᴍ.",
+            title="Atla",
+            description=f"Geçerli çalan yayını video sohbet üzerinde atlar ve bir sonraki yayına geçer.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/skip"),
         ),
         InlineQueryResultArticle(
-            title="Eɴᴅ",
-            description="ᴇɴᴅ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ sᴛʀᴇᴀᴍ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.",
+            title="Son",
+            description="Geçerli çalan yayını video sohbet üzerinde sonlandırır.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/end"),
         ),
         InlineQueryResultArticle(
-            title="Sʜᴜғғʟᴇ",
-            description="sʜᴜғғʟᴇ ᴛʜᴇ ǫᴜᴇᴜᴇᴅ sᴏɴɢs ɪɴ ᴩʟᴀʏʟɪsᴛ.",
+            title="Karıştır",
+            description="Sıradaki şarkıları çalma listesinde karıştırır.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/shuffle"),
         ),
         InlineQueryResultArticle(
-            title="Lᴏᴏᴩ",
-            description="ʟᴏᴏᴩ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴩʟᴀʏɪɴɢ ᴛʀᴀᴄᴋ ᴏɴ ᴠɪᴅᴇᴏᴄʜᴀᴛ.",
+            title="Döngü",
+            description="Geçerli çalan şarkıyı video sohbet üzerinde döngüye alır.",
             thumb_url="https://telegra.ph/file/c5952790fa8235f499749.jpg",
             input_message_content=InputTextMessageContent("/loop 3"),
         ),
