@@ -10,8 +10,8 @@ import config
 from ..logging import LOGGER
 
 
-def install_req(cmd: str) -> Tuple[str, str, int, int]:
-    async def install_requirements():
+def gereksinimleri_kur(cmd: str) -> Tuple[str, str, int, int]:
+    async def gereksinimleri_kur():
         args = shlex.split(cmd)
         process = await asyncio.create_subprocess_exec(
             *args,
@@ -26,7 +26,7 @@ def install_req(cmd: str) -> Tuple[str, str, int, int]:
             process.pid,
         )
 
-    return asyncio.get_event_loop().run_until_complete(install_requirements())
+    return asyncio.get_event_loop().run_until_complete(gereksinimleri_kur())
 
 
 def git():
@@ -39,9 +39,9 @@ def git():
         UPSTREAM_REPO = config.UPSTREAM_REPO
     try:
         repo = Repo()
-        LOGGER(__name__).info(f"Git Client Found [VPS DEPLOYER]")
+        LOGGER(__name__).info(f"Git İstemcisi Bulundu [VPS DEPLOYER]")
     except GitCommandError:
-        LOGGER(__name__).info(f"Invalid Git Command")
+        LOGGER(__name__).info(f"Geçersiz Git Komutu")
     except InvalidGitRepositoryError:
         repo = Repo.init()
         if "origin" in repo.remotes:
@@ -67,5 +67,5 @@ def git():
             nrs.pull(config.UPSTREAM_BRANCH)
         except GitCommandError:
             repo.git.reset("--hard", "FETCH_HEAD")
-        install_req("pip3 install --no-cache-dir -r requirements.txt")
-        LOGGER(__name__).info(f"Fetching updates from upstream repository...")
+        gereksinimleri_kur("pip3 install --no-cache-dir -r requirements.txt")
+        LOGGER(__name__).info(f"Yukarı Akış Havzasından güncellemeler alınıyor...") 
