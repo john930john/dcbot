@@ -1,41 +1,42 @@
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
-from config import SUPPORT_CHAT
+from ayarlar import DESTEK_SOHBETI
 
 
-def botplaylist_markup(_):
-    buttons = [
+def bot_çalma_listesi_düğmeleri(dil):
+    düğmeler = [
         [
-            InlineKeyboardButton(text=_["S_B_9"], url=SUPPORT_CHAT),
-            InlineKeyboardButton(text=_["CLOSE_BUTTON"], callback_data="close"),
+            InlineKeyboardButton(text=dil["S_B_9"], url=DESTEK_SOHBETI),
+            InlineKeyboardButton(text=dil["KAPATMA_DÜĞMESİ"], callback_data="kapat"),
         ],
     ]
-    return buttons
+    return düğmeler
 
 
-def close_markup(_):
-    upl = InlineKeyboardMarkup(
+def kapat_düğmeleri(dil):
+    düğmeler = InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(
-                    text=_["CLOSE_BUTTON"],
-                    callback_data="close",
+                    text=dil["KAPATMA_DÜĞMESİ"],
+                    callback_data="kapat",
                 ),
             ]
         ]
     )
-    return upl
+    return düğmeler
 
 
-def supp_markup(_):
-    upl = InlineKeyboardMarkup(
+def destek_düğmeleri(dil):
+    düğmeler = InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(
-                    text=_["S_B_9"],
-                    url=SUPPORT_CHAT,
+                    text=dil["S_B_9"],
+                    url=DESTEK_SOHBETI,
                 ),
             ]
         ]
     )
-    return upl
+    return düğmeler
+    
