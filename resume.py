@@ -13,9 +13,10 @@ from config import BANNED_USERS
 @AdminRightsCheck
 async def resume_com(cli, message: Message, _, chat_id):
     if await is_music_playing(chat_id):
-        return await message.reply_text(_["admin_3"])
+        return await message.reply_text("Müzik zaten çalıyor.")
     await music_on(chat_id)
     await Anony.resume_stream(chat_id)
     await message.reply_text(
-        _["admin_4"].format(message.from_user.mention), reply_markup=close_markup(_)
+        "Müzik devam ettiriliyor, {}".format(message.from_user.mention), reply_markup=close_markup()
     )
+    
