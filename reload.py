@@ -92,7 +92,7 @@ async def close_menu(_, query: CallbackQuery):
         await query.answer()
         await query.message.delete()
         umm = await query.message.reply_text(
-            f"Cʟᴏsᴇᴅ ʙʏ : {query.from_user.mention}"
+            f"Menü kapatıldı: {query.from_user.mention}"
         )
         await asyncio.sleep(7)
         await umm.delete()
@@ -123,3 +123,4 @@ async def stop_download(client, CallbackQuery: CallbackQuery, _):
         except:
             return await CallbackQuery.answer(_["tg_8"], show_alert=True)
     await CallbackQuery.answer(_["tg_9"], show_alert=True)
+        
