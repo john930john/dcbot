@@ -11,111 +11,112 @@ from AnonXMusic import app
 from config import YOUTUBE_IMG_URL
 
 
-def changeImageSize(maxWidth, maxHeight, image):
-    widthRatio = maxWidth / image.size[0]
-    heightRatio = maxHeight / image.size[1]
-    newWidth = int(widthRatio * image.size[0])
-    newHeight = int(heightRatio * image.size[1])
-    newImage = image.resize((newWidth, newHeight))
-    return newImage
+def resimBoyutunuDeğiştir(maksGenişlik, maksYükseklik, resim):
+    genişlikOranı = maksGenişlik / resim.size[0]
+    yükseklikOranı = maksYükseklik / resim.size[1]
+    yeniGenişlik = int(genişlikOranı * resim.size[0])
+    yeniYükseklik = int(yükseklikOranı * resim.size[1])
+    yeniResim = resim.resize((yeniGenişlik, yeniYükseklik))
+    return yeniResim
 
 
-def clear(text):
-    list = text.split(" ")
-    title = ""
-    for i in list:
-        if len(title) + len(i) < 60:
-            title += " " + i
-    return title.strip()
+def temizle(metin):
+    liste = metin.split(" ")
+    başlık = ""
+    for kelime in liste:
+        if len(başlık) + len(kelime) < 60:
+            başlık += " " + kelime
+    return başlık.strip()
 
 
-async def get_thumb(videoid):
-    if os.path.isfile(f"cache/{videoid}.png"):
-        return f"cache/{videoid}.png"
+async def videoKapakAl(videoID):
+    if os.path.isfile(f"cache/{videoID}.png"):
+        return f"cache/{videoID}.png"
 
-    url = f"https://www.youtube.com/watch?v={videoid}"
+    url = f"https://www.youtube.com/watch?v={videoID}"
     try:
-        results = VideosSearch(url, limit=1)
-        for result in (await results.next())["result"]:
+        sonuçlar = VideosSearch(url, limit=1)
+        for sonuç in (await sonuçlar.next())["result"]:
             try:
-                title = result["title"]
-                title = re.sub("\W+", " ", title)
-                title = title.title()
+                başlık = sonuç["title"]
+                başlık = re.sub("\W+", " ", başlık)
+                başlık = başlık.title()
             except:
-                title = "Unsupported Title"
+                başlık = "Desteklenmeyen Başlık"
             try:
-                duration = result["duration"]
+                süre = sonuç["duration"]
             except:
-                duration = "Unknown Mins"
-            thumbnail = result["thumbnails"][0]["url"].split("?")[0]
+                süre = "Bilinmeyen Dakikalar"
+            kapakResmi = sonuç["thumbnails"][0]["url"].split("?")[0]
             try:
-                views = result["viewCount"]["short"]
+                görüntülenme = sonuç["viewCount"]["short"]
             except:
-                views = "Unknown Views"
+                görüntülenme = "Bilinmeyen Görüntülenme"
             try:
-                channel = result["channel"]["name"]
+                kanal = sonuç["channel"]["name"]
             except:
-                channel = "Unknown Channel"
+                kanal = "Bilinmeyen Kanal"
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(thumbnail) as resp:
-                if resp.status == 200:
-                    f = await aiofiles.open(f"cache/thumb{videoid}.png", mode="wb")
-                    await f.write(await resp.read())
+        async with aiohttp.ClientSession() as oturum:
+            async with oturum.get(kapakResmi) as yanıt:
+                if yanıt.status == 200:
+                    f = await aiofiles.open(f"cache/thumb{videoID}.png", mode="wb")
+                    await f.write(await yanıt.read())
                     await f.close()
 
-        youtube = Image.open(f"cache/thumb{videoid}.png")
-        image1 = changeImageSize(1280, 720, youtube)
-        image2 = image1.convert("RGBA")
-        background = image2.filter(filter=ImageFilter.BoxBlur(10))
-        enhancer = ImageEnhance.Brightness(background)
-        background = enhancer.enhance(0.5)
-        draw = ImageDraw.Draw(background)
+        youtube = Image.open(f"cache/thumb{videoID}.png")
+        resim1 = resimBoyutunuDeğiştir(1280, 720, youtube)
+        resim2 = resim1.convert("RGBA")
+        arkaplan = resim2.filter(filter=ImageFilter.BoxBlur(10))
+        parlaklıkGeliştirici = ImageEnhance.Brightness(arkaplan)
+        arkaplan = parlaklıkGeliştirici.enhance(0.5)
+        çiz = ImageDraw.Draw(arkaplan)
         arial = ImageFont.truetype("AnonXMusic/assets/font2.ttf", 30)
         font = ImageFont.truetype("AnonXMusic/assets/font.ttf", 30)
-        draw.text((1110, 8), unidecode(app.name), fill="white", font=arial)
-        draw.text(
+        çiz.text((1110, 8), unidecode(app.name), fill="white", font=arial)
+        çiz.text(
             (55, 560),
-            f"{channel} | {views[:23]}",
+            f"{kanal} | {görüntülenme[:23]}",
             (255, 255, 255),
             font=arial,
         )
-        draw.text(
+        çiz.text(
             (57, 600),
-            clear(title),
+            temizle(başlık),
             (255, 255, 255),
             font=font,
         )
-        draw.line(
+        çiz.line(
             [(55, 660), (1220, 660)],
             fill="white",
             width=5,
             joint="curve",
         )
-        draw.ellipse(
+        çiz.ellipse(
             [(918, 648), (942, 672)],
             outline="white",
             fill="white",
             width=15,
         )
-        draw.text(
+        çiz.text(
             (36, 685),
             "00:00",
             (255, 255, 255),
             font=arial,
         )
-        draw.text(
+        çiz.text(
             (1185, 685),
-            f"{duration[:23]}",
+            f"{süre[:23]}",
             (255, 255, 255),
             font=arial,
         )
         try:
-            os.remove(f"cache/thumb{videoid}.png")
+            os.remove(f"cache/thumb{videoID}.png")
         except:
             pass
-        background.save(f"cache/{videoid}.png")
-        return f"cache/{videoid}.png"
-    except Exception as e:
-        print(e)
+        arkaplan.save(f"cache/{videoID}.png")
+        return f"cache/{videoID}.png"
+    except Exception as hata:
+        print(hata)
         return YOUTUBE_IMG_URL
+    
