@@ -1,25 +1,26 @@
 from pyrogram.types import InlineKeyboardButton
 import config
 
-def song_markup(_, vidid):
+def şarkı_seçimi(_, vidid):
     buttons = [
         [
             InlineKeyboardButton(
                 text=_["SG_B_2"],
-                callback_data=f"song_helper audio|{vidid}",
+                callback_data=f"şarkı_yardımcısı ses|{vidid}",
             ),
             InlineKeyboardButton(
                 text=_["SG_B_3"],
-                callback_data=f"song_helper video|{vidid}",
+                callback_data=f"şarkı_yardımcısı video|{vidid}",
             ),
         ],
         [
             InlineKeyboardButton(
-                text="🥀 sᴜᴩᴩᴏʀᴛ 🥀", url=f"{config.SUPPORT_CHAT}",
+                text="🥀 Destek 🥀", url=f"{config.DESTEK_SOHBETİ}",
             ),
             InlineKeyboardButton(
-                text=_["CLOSE_BUTTON"], callback_data="close"
+                text=_["KAPAT"], callback_data="kapat"
             ),
         ],
     ]
     return buttons
+    
