@@ -1,8 +1,8 @@
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-def stats_buttons(_, status):
-    not_sudo = [
+def istatistik_düğmeleri(_, durum):
+    sudo_yok = [
         InlineKeyboardButton(
             text=_["SA_B_1"],
             callback_data="TopOverall",
@@ -18,9 +18,10 @@ def stats_buttons(_, status):
             callback_data="TopOverall",
         ),
     ]
-    upl = InlineKeyboardMarkup(
+    düzenle = sudo if durum else sudo_yok
+    düğmeler = InlineKeyboardMarkup(
         [
-            sudo if status else not_sudo,
+            düzenle,
             [
                 InlineKeyboardButton(
                     text=_["CLOSE_BUTTON"],
@@ -29,11 +30,11 @@ def stats_buttons(_, status):
             ],
         ]
     )
-    return upl
+    return düğmeler
 
 
-def back_stats_buttons(_):
-    upl = InlineKeyboardMarkup(
+def geri_istatistik_düğmeleri(_):
+    düğmeler = InlineKeyboardMarkup(
         [
             [
                 InlineKeyboardButton(
@@ -47,4 +48,5 @@ def back_stats_buttons(_):
             ],
         ]
     )
-    return upl
+    return düğmeler
+    
