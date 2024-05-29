@@ -13,7 +13,7 @@ from config import BANNED_USERS
     filters.command(["end", "bitir", "cend", "cbitir"]) & filters.group & ~BANNED_USERS
 )
 @AdminRightsCheck
-async def stop_music(cli, message: Message, _, chat_id):
+async def müzik_durdur(cli, message: Message, _, chat_id):
     if not len(message.command) == 1:
         return
     await Anony.stop_stream(chat_id)
@@ -21,3 +21,4 @@ async def stop_music(cli, message: Message, _, chat_id):
     await message.reply_text(
         _["admin_5"].format(message.from_user.mention), reply_markup=close_markup(_)
     )
+    
