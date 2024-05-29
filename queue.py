@@ -5,87 +5,85 @@ from AnonXMusic.misc import db
 from AnonXMusic.utils.formatters import check_duration, seconds_to_min
 from config import autoclean, time_to_seconds
 
-
-async def put_queue(
-    chat_id,
-    original_chat_id,
-    file,
-    title,
-    duration,
-    user,
+async def sıra_ekle(
+    sohbet_id,
+    orijinal_sohbet_id,
+    dosya,
+    başlık,
+    süre,
+    kullanıcı,
     vidid,
-    user_id,
-    stream,
-    forceplay: Union[bool, str] = None,
+    kullanıcı_id,
+    akış,
+    zorla_çal: Union[bool, str] = None,
 ):
-    title = title.title()
+    başlık = başlık.title()
     try:
-        duration_in_seconds = time_to_seconds(duration) - 3
+        süre_saniye = time_to_seconds(süre) - 3
     except:
-        duration_in_seconds = 0
-    put = {
-        "title": title,
-        "dur": duration,
-        "streamtype": stream,
-        "by": user,
-        "user_id": user_id,
-        "chat_id": original_chat_id,
-        "file": file,
+        süre_saniye = 0
+    eklenen = {
+        "başlık": başlık,
+        "süre": süre,
+        "akış_türü": akış,
+        "kullanıcı": kullanıcı,
+        "kullanıcı_id": kullanıcı_id,
+        "sohbet_id": orijinal_sohbet_id,
+        "dosya": dosya,
         "vidid": vidid,
-        "seconds": duration_in_seconds,
-        "played": 0,
+        "saniye": süre_saniye,
+        "çalındı": 0,
     }
-    if forceplay:
-        check = db.get(chat_id)
-        if check:
-            check.insert(0, put)
+    if zorla_çal:
+        kontrol = db.get(sohbet_id)
+        if kontrol:
+            kontrol.insert(0, eklenen)
         else:
-            db[chat_id] = []
-            db[chat_id].append(put)
+            db[sohbet_id] = []
+            db[sohbet_id].append(eklenen)
     else:
-        db[chat_id].append(put)
-    autoclean.append(file)
+        db[sohbet_id].append(eklenen)
+    autoclean.append(dosya)
 
-
-async def put_queue_index(
-    chat_id,
-    original_chat_id,
-    file,
-    title,
-    duration,
-    user,
+async def sıra_ekle_sıra(
+    sohbet_id,
+    orijinal_sohbet_id,
+    dosya,
+    başlık,
+    süre,
+    kullanıcı,
     vidid,
-    stream,
-    forceplay: Union[bool, str] = None,
+    akış,
+    zorla_çal: Union[bool, str] = None,
 ):
     if "20.212.146.162" in vidid:
         try:
-            dur = await asyncio.get_event_loop().run_in_executor(
+            süre_dakika = await asyncio.get_event_loop().run_in_executor(
                 None, check_duration, vidid
             )
-            duration = seconds_to_min(dur)
+            süre = seconds_to_min(süre_dakika)
         except:
-            duration = "ᴜʀʟ sᴛʀᴇᴀᴍ"
-            dur = 0
+            süre = "URL Akışı"
+            süre_dakika = 0
     else:
-        dur = 0
-    put = {
-        "title": title,
-        "dur": duration,
-        "streamtype": stream,
-        "by": user,
-        "chat_id": original_chat_id,
-        "file": file,
+        süre_dakika = 0
+    eklenen = {
+        "başlık": başlık,
+        "süre": süre,
+        "akış_türü": akış,
+        "kullanıcı": kullanıcı,
+        "sohbet_id": orijinal_sohbet_id,
+        "dosya": dosya,
         "vidid": vidid,
-        "seconds": dur,
-        "played": 0,
+        "saniye": süre_dakika,
+        "çalındı": 0,
     }
-    if forceplay:
-        check = db.get(chat_id)
-        if check:
-            check.insert(0, put)
+    if zorla_çal:
+        kontrol = db.get(sohbet_id)
+        if kontrol:
+            kontrol.insert(0, eklenen)
         else:
-            db[chat_id] = []
-            db[chat_id].append(put)
+            db[sohbet_id] = []
+            db[sohbet_id].append(eklenen)
     else:
-        db[chat_id].append(put)
+        db[sohbet_id].append(eklenen)
