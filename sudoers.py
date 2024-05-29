@@ -12,7 +12,7 @@ from config import BANNED_USERS, OWNER_ID
 
 @app.on_message(filters.command(["addsudo"]) & filters.user(OWNER_ID))
 @language
-async def useradd(client, message: Message, _):
+async def kullancı_ekle(client, message: Message, _):
     if not message.reply_to_message:
         if len(message.command) != 2:
             return await message.reply_text(_["general_1"])
@@ -29,7 +29,7 @@ async def useradd(client, message: Message, _):
 
 @app.on_message(filters.command(["delsudo", "rmsudo"]) & filters.user(OWNER_ID))
 @language
-async def userdel(client, message: Message, _):
+async def kullanıcı_sil(client, message: Message, _):
     if not message.reply_to_message:
         if len(message.command) != 2:
             return await message.reply_text(_["general_1"])
@@ -46,7 +46,7 @@ async def userdel(client, message: Message, _):
 
 @app.on_message(filters.command(["sudolist", "listsudo", "sudoers"]) & ~BANNED_USERS)
 @language
-async def sudoers_list(client, message: Message, _):
+async def sudo_listesi(client, message: Message, _):
     text = _["sudo_5"]
     user = await app.get_users(OWNER_ID)
     user = user.first_name if not user.mention else user.mention
@@ -69,3 +69,4 @@ async def sudoers_list(client, message: Message, _):
         await message.reply_text(_["sudo_7"])
     else:
         await message.reply_text(text, reply_markup=close_markup(_))
+        
