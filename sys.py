@@ -1,11 +1,3 @@
-import time
-
-import psutil
-
-from AnonXMusic.misc import _boot_
-from AnonXMusic.utils.formatters import get_readable_time
-
-
 async def bot_sys_stats():
     bot_uptime = int(time.time() - _boot_)
     UP = f"{get_readable_time(bot_uptime)}"
@@ -13,3 +5,12 @@ async def bot_sys_stats():
     RAM = f"{psutil.virtual_memory().percent}%"
     DISK = f"{psutil.disk_usage('/').percent}%"
     return UP, CPU, RAM, DISK
+
+# Dildeki metinlerin güncellenmiş Türkçe versiyonu
+def dil_ayarları():
+    UP_TEXT = "Bot Çalışma Süresi: {}"
+    CPU_TEXT = "CPU Kullanımı: {}"
+    RAM_TEXT = "RAM Kullanımı: {}"
+    DISK_TEXT = "Disk Kullanımı: {}"
+    return UP_TEXT, CPU_TEXT, RAM_TEXT, DISK_TEXT
+    
