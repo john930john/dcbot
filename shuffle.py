@@ -11,10 +11,10 @@ from config import BANNED_USERS
 
 
 @app.on_message(
-    filters.command(["shuffle", "cshuffle"]) & filters.group & ~BANNED_USERS
+    filters.command(["karıştır", "ckarıştır"]) & filters.group & ~BANNED_USERS
 )
 @AdminRightsCheck
-async def admins(Client, message: Message, _, chat_id):
+async def yöneticileri_karıştır(Client, message: Message, _, chat_id):
     check = db.get(chat_id)
     if not check:
         return await message.reply_text(_["queue_2"])
@@ -31,3 +31,4 @@ async def admins(Client, message: Message, _, chat_id):
     await message.reply_text(
         _["admin_16"].format(message.from_user.mention), reply_markup=close_markup(_)
     )
+    
