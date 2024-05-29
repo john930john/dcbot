@@ -14,15 +14,16 @@ from config import BANNED_USERS, PING_IMG_URL
 @app.on_message(filters.command(["ping", "alive"]) & ~BANNED_USERS)
 @language
 async def ping_com(client, message: Message, _):
-    start = datetime.now()
-    response = await message.reply_photo(
+    baslangic = datetime.now()
+    yanit_foto = await message.reply_photo(
         photo=PING_IMG_URL,
         caption=_["ping_1"].format(app.mention),
     )
-    pytgping = await Anony.ping()
-    UP, CPU, RAM, DISK = await bot_sys_stats()
-    resp = (datetime.now() - start).microseconds / 1000
-    await response.edit_text(
-        _["ping_2"].format(resp, app.mention, UP, RAM, CPU, DISK, pytgping),
+    pytg_pingu = await Anony.ping()
+    ÇALIŞMA, CPU, RAM, DİSK = await bot_sys_stats()
+    yanit_suresi = (datetime.now() - baslangic).microseconds / 1000
+    await yanit_foto.edit_text(
+        _["ping_2"].format(yanit_suresi, app.mention, ÇALIŞMA, RAM, CPU, DİSK, pytg_pingu),
         reply_markup=supp_markup(_),
     )
+    
