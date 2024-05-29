@@ -9,7 +9,7 @@ from AnonXMusic.misc import SUDOERS
 from AnonXMusic.utils.decorators.language import language
 
 
-def testspeed(m, _):
+def hız_testi(m, _):
     try:
         test = speedtest.Speedtest()
         test.get_best_server()
@@ -25,12 +25,12 @@ def testspeed(m, _):
     return result
 
 
-@app.on_message(filters.command(["speedtest", "spt"]) & SUDOERS)
+@app.on_message(filters.command(["hıztesti", "ht"]) & SUDOERS)
 @language
-async def speedtest_function(client, message: Message, _):
+async def hıztesti_fonksiyonu(client, message: Message, _):
     m = await message.reply_text(_["server_11"])
     loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(None, testspeed, m, _)
+    result = await loop.run_in_executor(None, hız_testi, m, _)
     output = _["server_15"].format(
         result["client"]["isp"],
         result["client"]["country"],
@@ -43,3 +43,4 @@ async def speedtest_function(client, message: Message, _):
     )
     msg = await message.reply_photo(photo=result["share"], caption=output)
     await m.delete()
+    
