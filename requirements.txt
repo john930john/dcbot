@@ -23,3 +23,6 @@ unidecode
 yt-dlp
 youtube-search
 youtube-search-python
+flask==2.0.1
+requests==2.25.1
+AnonXMusic==<versiyon>
