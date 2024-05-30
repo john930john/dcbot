@@ -4,11 +4,10 @@ from pyrogram.types import Message
 from AnonXMusic import app
 from AnonXMusic.core.call import Anony
 
-welcome = 20
-close = 30
+hosgeldiniz = 20
+kapat = 30
 
-
-@app.on_message(filters.video_chat_started, group=welcome)
-@app.on_message(filters.video_chat_ended, group=close)
-async def welcome(_, message: Message):
+@app.on_message(filters.video_chat_started, group=hosgeldiniz)
+@app.on_message(filters.video_chat_ended, group=kapat)
+async def hosgeldiniz(_, message: Message):
     await Anony.stop_stream_force(message.chat.id)
